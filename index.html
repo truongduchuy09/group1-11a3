@@ -17,7 +17,7 @@
             height: 100%;
             background: #e0f4f9;
             overflow: hidden;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
         }
 
         .wrapper {
@@ -27,41 +27,25 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: inherit;
+            background: #e0f4f9;
         }
 
         .main-poster {
-            width: auto;
-            height: auto;
             max-width: 100%;
             max-height: 100%;
             object-fit: contain; 
             display: block;
-            transition: all 0.1s ease;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.2);
         }
 
-        /* LỆNH ÉP TRÀN VIỀN KHI FULLSCREEN */
-        :fullscreen, :-webkit-full-screen {
-            background: #000;
-        }
-
-        :fullscreen .main-poster, 
-        :-webkit-full-screen .main-poster {
+        :fullscreen .main-poster, :-webkit-full-screen .main-poster {
             width: 100vw !important;
             height: 100vh !important;
             max-width: none !important;
             max-height: none !important;
             object-fit: fill !important;
-            box-shadow: none !important;
-        }
-
-        @media (orientation: landscape) and (max-width: 1024px) {
-            .main-poster {
-                width: 100%;
-                height: 100%;
-                object-fit: fill;
-            }
+            box-shadow: none;
         }
 
         .overlay-layer {
@@ -70,22 +54,23 @@
             left: 50%;
             transform: translate(-50%, -50%);
             pointer-events: none;
-            z-index: 20;
+            z-index: 10;
         }
 
         .hotspot {
             position: absolute;
             pointer-events: auto;
+            cursor: pointer;
             background: rgba(255, 255, 255, 0);
-            border-radius: 10px;
-            transition: all 0.2s ease;
+            border-radius: 12px;
+            transition: all 0.25s ease;
         }
 
         .hotspot:hover {
-            transform: scale(1.025);
-            background: rgba(255, 255, 255, 0.25);
-            border: 2px solid #fff;
-            box-shadow: 0 0 15px rgba(255,255,255,0.7);
+            transform: scale(1.02);
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255,255,255,0.8);
+            box-shadow: 0 0 20px rgba(255,255,255,0.5);
         }
 
         .box-1 { top: 20.2%; left: 3.6%; width: 44.5%; height: 18.6%; }
@@ -95,84 +80,186 @@
         .box-5 { top: 45.5%; left: 52.7%; width: 44.5%; height: 19%; }
         .box-6 { top: 71.5%; left: 61%; width: 36.4%; height: 21.8%; }
 
-        #fs-modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        .modal-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.7);
+            display: none; justify-content: center; align-items: center;
+            z-index: 1000; backdrop-filter: blur(12px);
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+
+        .info-card {
+            background: #fff; width: 92%; max-width: 480px;
+            border-radius: 28px; overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+            transform: scale(0.9) translateY(30px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-overlay.active .info-card { transform: scale(1) translateY(0); }
+
+        .info-img-wrapper { width: 100%; height: 230px; overflow: hidden; position: relative; }
+        .info-img { width: 100%; height: 100%; object-fit: cover; }
+
+        .info-content { padding: 30px; }
+        .info-content h2 { color: #1a237e; margin-bottom: 12px; font-size: 24px; font-weight: 800; }
+        .info-content p { color: #555; line-height: 1.6; margin-bottom: 25px; font-size: 15px; }
+
+        .btn-link {
+            display: flex; align-items: center; justify-content: center;
+            width: 100%; padding: 14px; text-decoration: none;
+            border-radius: 14px; font-weight: 700; margin-bottom: 12px;
+            transition: all 0.2s ease; font-size: 15px;
+        }
+
+        .btn-video { background: #d32f2f; color: white; border: none; cursor: pointer; }
+        .btn-video:hover { background: #b71c1c; transform: translateY(-2px); }
+
+        .btn-news { background: #f0f7ff; color: #1976d2; border: 1.5px solid #1976d2; }
+        .btn-news:hover { background: #e3f2fd; transform: translateY(-2px); }
+
+        .btn-close { 
+            background: none; color: #888; border: none; cursor: pointer;
+            width: 100%; text-align: center; font-size: 13px; font-weight: 600;
+            margin-top: 10px;
+        }
+
+        #fs-modal-prompt {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
             display: flex; justify-content: center; align-items: center;
-            z-index: 1000; visibility: hidden; opacity: 0;
-            transition: opacity 0.4s;
+            z-index: 2000; visibility: hidden; opacity: 0; transition: 0.4s;
         }
 
-        .modal-box {
-            background: #fff; padding: 25px; border-radius: 12px;
-            text-align: center; max-width: 320px;
+        .prompt-box { 
+            background: #fff; padding: 35px; border-radius: 24px; 
+            text-align: center; max-width: 340px; 
         }
-
-        .modal-box h2 { font-size: 20px; margin-bottom: 10px; color: #333; }
-        .modal-box p { font-size: 14px; color: #666; margin-bottom: 20px; }
-
-        .btn-group { display: flex; justify-content: center; gap: 10px; }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .btn-confirm { background: #d32f2f; color: white; }
-        .btn-cancel { background: #eee; color: #333; }
     </style>
 </head>
 <body>
 
-    <div id="fs-modal">
-        <div class="modal-box">
-            <h2>Chế độ toàn màn hình</h2>
-            <p>Để có trải nghiệm tốt nhất hãy mở toàn màn hình bằng nút màu đỏ phía dưới</p>
-            <div class="btn-group">
-                <button class="btn btn-confirm" onclick="goFull()">Đồng ý</button>
-                <button class="btn btn-cancel" onclick="closeMod()">Bỏ qua</button>
+    <div class="wrapper" id="wrapper">
+        <img src="image.png" class="main-poster" id="poster">
+        
+        <div class="overlay-layer" id="overlay">
+            <div class="hotspot box-1" onclick="openInfo(0)"></div>
+            <div class="hotspot box-2" onclick="openInfo(1)"></div>
+            <div class="hotspot box-3" onclick="openInfo(2)"></div>
+            <div class="hotspot box-4" onclick="openInfo(3)"></div>
+            <div class="hotspot box-5" onclick="openInfo(4)"></div>
+            <div class="hotspot box-6" onclick="openInfo(5)"></div>
+        </div>
+
+        <div id="fs-modal-prompt">
+            <div class="prompt-box">
+                <h2 style="color:#d32f2f; margin-bottom:15px;">Toàn màn hình</h2>
+                <p style="color:#666; font-size:14px; margin-bottom:25px; line-height:1.5;">Hãy mở chế độ toàn màn hình để quan sát áp phích và tư liệu rõ nét nhất.</p>
+                <button class="btn-link btn-video" onclick="goFull()">Mở toàn màn hình</button>
+                <button onclick="closePrompt()" style="background:none; border:none; color:#aaa; cursor:pointer; font-size:12px; margin-top:10px;">Để sau</button>
+            </div>
+        </div>
+
+        <div id="info-modal" class="modal-overlay" onclick="closeInfo()">
+            <div class="info-card" onclick="event.stopPropagation()">
+                <div class="info-img-wrapper">
+                    <img id="modal-img" src="" class="info-img">
+                </div>
+                <div class="info-content">
+                    <h2 id="modal-title">Tiêu đề</h2>
+                    <p id="modal-desc">Thông tin chi tiết...</p>
+                    <a id="modal-video" href="#" target="_blank" class="btn-link btn-video">▶ Xem Video Tư Liệu</a>
+                    <a id="modal-news" href="#" target="_blank" class="btn-link btn-news">📖 Đọc Bài Viết Chi Tiết</a>
+                    <button class="btn-close" onclick="closeInfo()">ĐÓNG THÔNG BÁO</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="wrapper" id="wrapper">
-        <img src="image.png" class="main-poster" id="poster">
-        <div class="overlay-layer" id="overlay">
-            <a href="https://henrry.dev/" target="_blank" class="hotspot box-1"></a>
-            <a href="https://henrry.dev/" target="_blank" class="hotspot box-2"></a>
-            <a href="https://henrry.dev/" target="_blank" class="hotspot box-3"></a>
-            <a href="https://henrry.dev/" target="_blank" class="hotspot box-4"></a>
-            <a href="https://henrry.dev/" target="_blank" class="hotspot box-5"></a>
-            <a href="https://henrry.dev/" target="_blank" class="hotspot box-6"></a>
-        </div>
-    </div>
-
     <script>
-        const modal = document.getElementById('fs-modal');
+        const data = [
+            {
+                title: "Chủ Quyền Lâu Đời",
+                img: "img1.png",
+                desc: "Từ thế kỷ XVII, các triều đại phong kiến Việt Nam đã thực thi chủ quyền tại Hoàng Sa và Trường Sa một cách liên tục và hòa bình.",
+                video: "https://henrry.dev/",
+                news: "https://henrry.dev/"
+            },
+            {
+                title: "Đội Hoàng Sa",
+                img: "img2.png",
+                desc: "Chúa Nguyễn thành lập đội Hoàng Sa để đo đạc hải trình, cắm mốc và thu lượm sản vật, khẳng định sự quản lý của nhà nước.",
+                video: "https://henrry.dev/",
+                news: "https://henrry.dev/"
+            },
+            {
+                title: "Thời Vua Minh Mạng",
+                img: "img3.png",
+                desc: "Năm 1836, Vua Minh Mạng cử đội thủy quân ra Hoàng Sa cắm cột mốc chủ quyền và vẽ bản đồ chi tiết quần đảo.",
+                video: "https://henrry.dev/",
+                news: "https://henrry.dev/"
+            },
+            {
+                title: "Thời Kỳ Pháp Thuộc",
+                img: "img4.png",
+                desc: "Chính quyền bảo hộ Pháp thay mặt Việt Nam tiếp tục quản lý, xây dựng trạm khí tượng và duy trì các cột mốc chủ quyền.",
+                video: "https://henrry.dev/",
+                news: "https://henrry.dev/"
+            },
+            {
+                title: "Giai Đoạn 1954 - 1975",
+                img: "img5.png",
+                desc: "Các lực lượng hải quân đã kiên cường giữ vững biển đảo trong bối cảnh lịch sử đầy biến động của đất nước.",
+                video: "https://henrry.dev/",
+                news: "https://henrry.dev/"
+            },
+            {
+                title: "Từ 1975 Đến Nay",
+                img: "img6.png",
+                desc: "Nhà nước CHXHCN Việt Nam kiên quyết bảo vệ chủ quyền trên cơ sở luật pháp quốc tế và Công ước UNCLOS 1982.",
+                video: "https://henrry.dev/",
+                news: "https://henrry.dev/"
+            }
+        ];
+
+        const infoModal = document.getElementById('info-modal');
+        const fsPrompt = document.getElementById('fs-modal-prompt');
         const poster = document.getElementById('poster');
         const overlay = document.getElementById('overlay');
         const wrapper = document.getElementById('wrapper');
 
         window.onload = () => {
             if (!document.fullscreenElement) {
-                modal.style.visibility = 'visible';
-                modal.style.opacity = '1';
+                fsPrompt.style.visibility = 'visible';
+                fsPrompt.style.opacity = '1';
             }
             resizeOverlay();
         };
 
-        function closeMod() {
-            modal.style.opacity = '0';
-            setTimeout(() => modal.style.visibility = 'hidden', 400);
+        function closePrompt() {
+            fsPrompt.style.opacity = '0';
+            setTimeout(() => fsPrompt.style.visibility = 'hidden', 400);
         }
 
         function goFull() {
             if (wrapper.requestFullscreen) wrapper.requestFullscreen();
             else if (wrapper.webkitRequestFullscreen) wrapper.webkitRequestFullscreen();
-            closeMod();
+            closePrompt();
+        }
+
+        function openInfo(index) {
+            const item = data[index];
+            document.getElementById('modal-img').src = item.img;
+            document.getElementById('modal-title').innerText = item.title;
+            document.getElementById('modal-desc').innerText = item.desc;
+            document.getElementById('modal-video').href = item.video;
+            document.getElementById('modal-news').href = item.news;
+            infoModal.classList.add('active');
+        }
+
+        function closeInfo() {
+            infoModal.classList.remove('active');
         }
 
         function resizeOverlay() {
@@ -183,7 +270,7 @@
 
         window.addEventListener('resize', resizeOverlay);
         document.addEventListener('fullscreenchange', resizeOverlay);
-        setInterval(resizeOverlay, 500); 
+        setInterval(resizeOverlay, 500);
     </script>
 </body>
 </html>
