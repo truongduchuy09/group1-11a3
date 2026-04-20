@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Group 1 - 11A3</title>
+    <title>Lịch Sử Biển Đảo Việt Nam</title>
     <link rel="icon" type="image/png" href="favicon.png">
-
     <style>
         * {
             margin: 0 !important;
@@ -16,52 +15,79 @@
         html, body {
             width: 100%;
             height: 100%;
-            background-color: #000;
+            background: #e0f4f9;
             overflow: hidden;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         .wrapper {
             position: relative;
             width: 100vw;
             height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: inherit;
         }
 
         .main-poster {
-            width: 100%;
-            height: 100%;
-            object-fit: fill;
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain; 
             display: block;
+            transition: all 0.1s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        /* LỆNH ÉP TRÀN VIỀN KHI FULLSCREEN */
+        :fullscreen, :-webkit-full-screen {
+            background: #000;
+        }
+
+        :fullscreen .main-poster, 
+        :-webkit-full-screen .main-poster {
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: none !important;
+            max-height: none !important;
+            object-fit: fill !important;
+            box-shadow: none !important;
+        }
+
+        @media (orientation: landscape) and (max-width: 1024px) {
+            .main-poster {
+                width: 100%;
+                height: 100%;
+                object-fit: fill;
+            }
         }
 
         .overlay-layer {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             pointer-events: none;
+            z-index: 20;
         }
 
         .hotspot {
             position: absolute;
             pointer-events: auto;
-            text-decoration: none;
             background: rgba(255, 255, 255, 0);
-            border-radius: 12px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 10;
-            border: 2px solid rgba(255, 255, 255, 0);
+            border-radius: 10px;
+            transition: all 0.2s ease;
         }
 
         .hotspot:hover {
             transform: scale(1.025);
             background: rgba(255, 255, 255, 0.25);
-            border: 2px solid rgba(255, 255, 255, 1);
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            border: 2px solid #fff;
+            box-shadow: 0 0 15px rgba(255,255,255,0.7);
         }
 
-        /* Tọa độ hotspot */
         .box-1 { top: 20.2%; left: 3.6%; width: 44.5%; height: 18.6%; }
         .box-2 { top: 45.7%; left: 3.6%; width: 44.7%; height: 19%; }
         .box-3 { top: 71.2%; left: 4.7%; width: 35.1%; height: 21.4%; }
@@ -69,68 +95,52 @@
         .box-5 { top: 45.5%; left: 52.7%; width: 44.5%; height: 19%; }
         .box-6 { top: 71.5%; left: 61%; width: 36.4%; height: 21.8%; }
 
-        /* Style cho bảng thông báo Fullscreen */
-        #fullscreen-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            visibility: hidden; /* Mặc định ẩn */
-            opacity: 0;
-            transition: opacity 0.5s;
+        #fs-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1000; visibility: hidden; opacity: 0;
+            transition: opacity 0.4s;
         }
 
-        .modal-content {
-            background: #fff;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
-            max-width: 400px;
+        .modal-box {
+            background: #fff; padding: 25px; border-radius: 12px;
+            text-align: center; max-width: 320px;
         }
 
-        .modal-content h2 { color: #333; margin-bottom: 15px; font-size: 20px; }
-        .modal-content p { color: #666; margin-bottom: 25px; }
+        .modal-box h2 { font-size: 20px; margin-bottom: 10px; color: #333; }
+        .modal-box p { font-size: 14px; color: #666; margin-bottom: 20px; }
 
-        .btn-group { display: flex; justify-content: center; gap: 15px; }
+        .btn-group { display: flex; justify-content: center; gap: 10px; }
 
         .btn {
-            padding: 10px 25px;
+            padding: 10px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
-            transition: 0.3s;
         }
 
-        .btn-confirm { background: #d32f2f; color: #fff; }
-        .btn-confirm:hover { background: #b71c1c; }
+        .btn-confirm { background: #d32f2f; color: white; }
         .btn-cancel { background: #eee; color: #333; }
-        .btn-cancel:hover { background: #ddd; }
     </style>
 </head>
 <body>
 
-    <div id="fullscreen-modal">
-        <div class="modal-content">
+    <div id="fs-modal">
+        <div class="modal-box">
             <h2>Chế độ toàn màn hình</h2>
-            <p>để có trải nghiệm tốt nhất hãy mở toàn màn hình bằng nút màu đỏ phía dưới</p>
+            <p>Để có trải nghiệm tốt nhất hãy mở toàn màn hình bằng nút màu đỏ phía dưới</p>
             <div class="btn-group">
-                <button class="btn btn-confirm" onclick="enableFullScreen()">Đồng ý</button>
-                <button class="btn btn-cancel" onclick="closeModal()">Bỏ qua</button>
+                <button class="btn btn-confirm" onclick="goFull()">Đồng ý</button>
+                <button class="btn btn-cancel" onclick="closeMod()">Bỏ qua</button>
             </div>
         </div>
     </div>
 
-    <div class="wrapper">
-        <img src="image.png" class="main-poster">
-        <div class="overlay-layer">
+    <div class="wrapper" id="wrapper">
+        <img src="image.png" class="main-poster" id="poster">
+        <div class="overlay-layer" id="overlay">
             <a href="https://henrry.dev/" target="_blank" class="hotspot box-1"></a>
             <a href="https://henrry.dev/" target="_blank" class="hotspot box-2"></a>
             <a href="https://henrry.dev/" target="_blank" class="hotspot box-3"></a>
@@ -141,33 +151,39 @@
     </div>
 
     <script>
-        const modal = document.getElementById('fullscreen-modal');
+        const modal = document.getElementById('fs-modal');
+        const poster = document.getElementById('poster');
+        const overlay = document.getElementById('overlay');
+        const wrapper = document.getElementById('wrapper');
 
-        // Hiển thị thông báo khi vào trang nếu là máy tính
-        window.onload = function() {
-            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-            if (!isMobile) {
+        window.onload = () => {
+            if (!document.fullscreenElement) {
                 modal.style.visibility = 'visible';
                 modal.style.opacity = '1';
             }
+            resizeOverlay();
         };
 
-        function closeModal() {
+        function closeMod() {
             modal.style.opacity = '0';
-            setTimeout(() => { modal.style.visibility = 'hidden'; }, 500);
+            setTimeout(() => modal.style.visibility = 'hidden', 400);
         }
 
-        function enableFullScreen() {
-            let elem = document.documentElement;
-            if (elem.requestFullscreen) {
-                elem.requestFullscreen();
-            } else if (elem.webkitRequestFullscreen) { /* Safari */
-                elem.webkitRequestFullscreen();
-            } else if (elem.msRequestFullscreen) { /* IE11 */
-                elem.msRequestFullscreen();
-            }
-            closeModal();
+        function goFull() {
+            if (wrapper.requestFullscreen) wrapper.requestFullscreen();
+            else if (wrapper.webkitRequestFullscreen) wrapper.webkitRequestFullscreen();
+            closeMod();
         }
+
+        function resizeOverlay() {
+            const rect = poster.getBoundingClientRect();
+            overlay.style.width = rect.width + 'px';
+            overlay.style.height = rect.height + 'px';
+        }
+
+        window.addEventListener('resize', resizeOverlay);
+        document.addEventListener('fullscreenchange', resizeOverlay);
+        setInterval(resizeOverlay, 500); 
     </script>
 </body>
 </html>
